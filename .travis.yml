@@ -1,0 +1,14 @@
+sudo: required
+
+language: cpp
+
+services:
+  - docker
+
+before_install:
+- docker build -t my-gcc-app .
+- docker run --detach --publish 8080:8080 --name mygccapp my-gcc-app:latest
+- docker ps -a
+
+script:
+- bundle exec rake test
