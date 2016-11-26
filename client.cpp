@@ -182,7 +182,7 @@ int main(int argc , char *argv[])
     //cin>>host;
     host = "localhost";
     
-    while(true)
+    for(int i=0 ; i < 100 ; i++)
     {
         tcp_client c;
         iter++;
