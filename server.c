@@ -54,7 +54,9 @@ int main()
 
     //write(client_fd, response, sizeof(response) - 1); /*-1:'\0'*/
     write(client_fd, aString, strlen(aString));
-    /*int bytes_read = read(client_fd, aString, 4096);
+    
+    /* Here some possible enhancements to read query, update it before resending to client
+    int bytes_read = read(client_fd, aString, 4096);
     aString[bytes_read] = '\0';
     if(bytes_read > 0)
       write(client_fd, aString, strlen(aString));
