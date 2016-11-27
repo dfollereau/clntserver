@@ -7,6 +7,7 @@ services:
 
 before_install:
 - docker build -t my-gcc-app .
+- docker images -a
 - docker run --detach --publish 8080:8080 --name mygccapp my-gcc-app:latest
 - docker ps -a
 - g++ client.cpp -o client
