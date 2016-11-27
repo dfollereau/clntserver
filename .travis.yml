@@ -8,6 +8,7 @@ services:
 before_install:
 - docker build -t dfollereau/cpp-clientserver .
 - docker images -a
+- docker commit -m "docker image built from TravisCI" -a "Denis Follereau" dfollereau/cpp-clientserver:latest
 - docker run --detach --publish 8080:8080 --name cppserver dfollereau/cpp-clientserver:latest
 - docker ps -a
 - g++ client.cpp -o client
