@@ -6,9 +6,9 @@ services:
   - docker
 
 before_install:
-- docker build -t my-gcc-app .
+- docker build -t cpp-clientserver .
 - docker images -a
-- docker run --detach --publish 8080:8080 --name mygccapp my-gcc-app:latest
+- docker run --detach --publish 8080:8080 --name cppserver cpp-clientserver:latest
 - docker ps -a
 - g++ client.cpp -o client
 - ls -al
@@ -20,4 +20,6 @@ after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
     docker push dfollereau/cpp-clientserver;
+    docker rmi -f $(docker images -aq);
+    docker rm -f $(docker ps -aq);
     fi
