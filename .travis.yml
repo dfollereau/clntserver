@@ -8,19 +8,20 @@ services:
 before_install:
 - docker build -t dfollereau/cpp-clientserver .
 - docker images -a
-- docker commit -m "docker image built from TravisCI" -a "Denis Follereau" dfollereau/cpp-clientserver:latest
 - docker run --detach --publish 8080:8080 --name cppserver dfollereau/cpp-clientserver:latest
 - docker ps -a
 - g++ client.cpp -o client
 - ls -al
+- COMMIT=${TRAVIS_COMMIT::8}
 
 script:
 - ./client
 
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push dfollereau/cpp-clientserver;
-    docker rmi -f $(docker images -aq);
-    docker rm -f $(docker ps -aq);
-    fi
+- docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+- export REPO=dfollereau/cpp-clientserver
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+- docker build -f Dockerfile -t $REPO:$COMMIT .
+- docker tag $REPO:$COMMIT $REPO:$TAG
+- docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
+- docker push $REPO
