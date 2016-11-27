@@ -122,7 +122,7 @@ bool tcp_client::conn(string address , int port)
     if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0)
     {
         perror("connect failed. Error");
-        return 1;
+        return false;
     }
      
     cout<<"Connected\n";
@@ -178,8 +178,6 @@ int main(int argc , char *argv[])
     long int iter = 0;
     string query = "UNH+1+DENBUQ:05:1:1A+510UH3UMNN DCD++KE58F22A+++DCR QTY+TO:5:SEC UNT+4+1'";
      
-    //cout<<"Enter hostname : ";
-    //cin>>host;
     host = "localhost";
     
     for(int i=0 ; i < 100 ; i++)
@@ -190,12 +188,19 @@ int main(int argc , char *argv[])
         //connect to host
         cout<<"\n-->>>>---------BEG------Loop[" << iter << "]-----------\n";
         cout << "Connecting to "<< host << "[" << currentDateTime() << "]\n";
-        c.conn(host , 8080);
-         
+        if(c.conn(host , 8080) == false) 
+	{
+	  cout << "Connect failed\n";
+	  return 1;
+	}
         //send some data
-        //c.send_data("GET / HTTP/1.1\r\n\r\n");
+        //c.send_data("GET / HTTP/1.1\r\n\r\n"); if http header required
         cout << "Sending [" << query << "]\n";
-        c.send_data(query);
+        if(c.send_data(query) == false)
+	{
+	  cout << "Failed sending data\n";
+	  return 1;
+	}
          
         //receive and echo reply
         cout<< "Receiving from POD server [" << c.receive(1024) << "]\n";
@@ -208,6 +213,6 @@ int main(int argc , char *argv[])
         cout<<"--<<<<------END--------------------\n\n";
     }
     
-    //done
+    //done with success
     return 0;
 }
