@@ -1,7 +1,8 @@
 machine:
   services:
     - docker
-
+    - timezone: Europe/Paris
+    
 dependencies:
   override:
     - docker info
