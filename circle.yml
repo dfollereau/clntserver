@@ -1,7 +1,10 @@
 machine:
+  python:
+    version: 2.7.3
+  timezone: 
+    Europe/Paris
   services:
     - docker
-    - timezone: Europe/Paris
     
 dependencies:
   override:
