@@ -180,7 +180,7 @@ int main(int argc , char *argv[])
      
     host = "localhost";
     
-    for(int i=0 ; i < 100 ; i++)
+    for(int i=0 ; i < 5 ; i++)
     {
         tcp_client c;
         iter++;
