@@ -30,3 +30,11 @@ deployment:
     branch: master
     heroku:
       appname: clntsvr
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker push dfollereau/cpp-clientserver:latest
+      - heroku plugins:install heroku-container-registry
+      - docker login --email=_ --username=_ --password=$(heroku auth:token) registry.heroku.com
+      - heroku maintenance:on --app clntsvr
+      - heroku container:push web --app clntsvr
+      - heroku maintenance:off --app clntsvr
