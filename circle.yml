@@ -1,22 +1,33 @@
 machine:
-  timezone: 
-    Europe/Paris
+  environment:
+    PROJECT_NAME: acs-dev
+    CLUSTER_NAME: dfollereau-docker-google-cluster
+    CLOUDSDK_COMPUTE_ZONE: us-central1-f
   services:
     - docker
     
 dependencies:
+  pre:
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update --version 136.0.0
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update --version 136.0.0 kubectl
+    - echo $GCLOUD_SERVICE_KEY | base64 --decode -i > ${HOME}/gcloud-service-key.json
+    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+    - sudo /opt/google-cloud-sdk/bin/gcloud config set project $PROJECT_NAME
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet config set container/cluster $CLUSTER_NAME
+    - sudo /opt/google-cloud-sdk/bin/gcloud config set compute/zone ${CLOUDSDK_COMPUTE_ZONE}
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet container clusters get-credentials $CLUSTER_NAME
   override:
     - docker info
-    - docker build -t dfollereau/cpp-clientserver .
-    - docker images -a
+    - docker build -t us.gcr.io/${PROJECT_NAME}/cpp-clientserver .
+#    - docker images -a
 
-test:
-  override:
-    - docker run --detach --publish 8080:8080 --name cppserver dfollereau/cpp-clientserver:latest; sleep 10
-    - docker ps -a
-    - g++ client.cpp -o client
-    - ls -al
-    - ./client
+#test:
+#  override:
+#    - docker run --detach --publish 8080:8080 --name cppserver dfollereau/cpp-clientserver:latest; sleep 10
+#    - docker ps -a
+#    - g++ client.cpp -o client
+#    - ls -al
+#    - ./client
 
 #deployment:
 #  hub:
@@ -25,14 +36,14 @@ test:
 #      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
 #      - docker push dfollereau/cpp-clientserver
       
-deployment:
-  staging:
-    branch: master
-    commands:
-      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker push dfollereau/cpp-clientserver:latest
-      - heroku plugins:install heroku-container-registry
-      - docker login --email=_ --username=_ --password=$(heroku auth:token) registry.heroku.com
-      - heroku maintenance:on --app clntsvr
-      - heroku container:push web --app clntsvr
-      - heroku maintenance:off --app clntsvr
+#deployment:
+#  staging:
+#    branch: master
+#    commands:
+#      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+#      - docker push dfollereau/cpp-clientserver:latest
+#      - heroku plugins:install heroku-container-registry
+#      - docker login --email=_ --username=_ --password=$(heroku auth:token) registry.heroku.com
+#      - heroku maintenance:on --app clntsvr
+#      - heroku container:push web --app clntsvr
+#      - heroku maintenance:off --app clntsvr
