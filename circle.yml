@@ -1,7 +1,7 @@
 machine:
   environment:
     PROJECT_NAME: acs-dev
-    CLUSTER_NAME: dfollereau-docker-google-cluster
+    CLUSTER_NAME: dfollereau-cluster
     CLOUDSDK_COMPUTE_ZONE: us-central1-f
   services:
     - docker
