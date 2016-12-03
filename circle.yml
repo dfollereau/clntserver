@@ -30,6 +30,12 @@ test:
     - ls -al
     - ./client
 
+deployment:
+  prod:
+    branch: master
+    commands:
+      - ./deploy.sh
+      
 #deployment:
 #  hub:
 #    branch: master
