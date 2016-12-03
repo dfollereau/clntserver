@@ -1,5 +1,6 @@
 machine:
   environment:
+    GCLOUD_PROJECT: acs-dev
     PROJECT_NAME: acs-dev
     CLUSTER_NAME: dfollereau-cluster
     CLOUDSDK_COMPUTE_ZONE: us-central1-b
