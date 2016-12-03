@@ -26,9 +26,9 @@ test:
   override:
     - docker run -d -p 8080:8080 -e "SECRET_KEY_BASE=abcd1234" us.gcr.io/${PROJECT_NAME}/dfollereau-cppserver:$CIRCLE_SHA1; sleep 10
     - docker ps -a
-#    - g++ client.cpp -o client
-#    - ls -al
-#    - ./client
+    - g++ client.cpp -o client
+    - ls -al
+    - ./client
 
 #deployment:
 #  hub:
