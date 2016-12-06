@@ -178,7 +178,10 @@ int main(int argc , char *argv[])
     long int iter = 0;
     string query = "UNH+1+DENBUQ:05:1:1A+510UH3UMNN DCD++KE58F22A+++DCR QTY+TO:5:SEC UNT+4+1'";
      
-    host = "localhost";
+    if(argc > 1) 
+	host = "104.154.169.129"; // test done connecting to google container (server on GCE)
+    else
+	host = "localhost"; // test done inside container
     
     for(int i=0 ; i < 5 ; i++)
     {
