@@ -31,11 +31,11 @@ test:
     - ls -al
     - ./client
 
-deployment:
-  staging:
-    branch: master
-    commands:
-      - ./deploy.sh
+#deployment:
+#  staging:
+#    branch: master
+#    commands:
+#      - ./deploy.sh
       
 #deployment:
 #  hub:
