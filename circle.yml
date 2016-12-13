@@ -1,42 +1,23 @@
 machine:
-  environment:
-    PROJECT_NAME: acs-dev
-    CLUSTER_NAME: dfollereau-cluster
-    CLOUDSDK_COMPUTE_ZONE: us-central1-b
-    GCLOUD_PROJECT: acs-dev
+  timezone: 
+    Europe/Paris
   services:
     - docker
     
 dependencies:
-  pre:
-    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update --version 136.0.0
-    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update --version 136.0.0 kubectl
-    - echo $GCLOUD_SERVICE_KEY | base64 --decode -i > ${HOME}/gcloud-service-key.json
-    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
-    - sudo /opt/google-cloud-sdk/bin/gcloud config set project $PROJECT_NAME
-    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet config set container/cluster $CLUSTER_NAME
-    - sudo /opt/google-cloud-sdk/bin/gcloud config set compute/zone ${CLOUDSDK_COMPUTE_ZONE}
-#    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet container clusters get-credentials $CLUSTER_NAME
   override:
     - docker info
-    - docker build -t us.gcr.io/${PROJECT_NAME}/dfollereau-cppserver:$CIRCLE_SHA1 .
-    - docker tag us.gcr.io/${PROJECT_NAME}/dfollereau-cppserver:$CIRCLE_SHA1 us.gcr.io/${PROJECT_NAME}/dfollereau-cppserver:latest
+    - docker build -t dfollereau/cpp-clientserver .
     - docker images -a
 
 test:
   override:
-    - docker run -d -p 8080:8080 -e "SECRET_KEY_BASE=abcd1234" us.gcr.io/${PROJECT_NAME}/dfollereau-cppserver:$CIRCLE_SHA1; sleep 10
+    - docker run --detach --publish 8080:8080 --name cppserver dfollereau/cpp-clientserver:latest; sleep 10
     - docker ps -a
     - g++ client.cpp -o client
     - ls -al
     - ./client
 
-#deployment:
-#  staging:
-#    branch: master
-#    commands:
-#      - ./deploy.sh
-      
 #deployment:
 #  hub:
 #    branch: master
